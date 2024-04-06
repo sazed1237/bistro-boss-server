@@ -31,6 +31,7 @@ async function run() {
         // await client.connect();
 
         const userCollections = client.db("bistroBoss").collection("users");
+        const bookingCollections = client.db("bistroBoss").collection("bookings");
         const menuCollections = client.db("bistroBoss").collection("Menus");
         const reviewCollections = client.db("bistroBoss").collection("Reviews");
         const cartCollections = client.db("bistroBoss").collection("carts");
@@ -167,6 +168,20 @@ async function run() {
         app.get('/reviews', async (req, res) => {
             const reviews = await reviewCollections.find().toArray()
             res.send(reviews)
+        })
+
+        app.post('/reviews', VerifyJWT, async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollections.insertOne(review)
+            res.send(result)
+        })
+
+        // bookings relate api
+        app.get('/bookings/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const result = await bookingCollections.find(query).toArray()
+            res.send(result)
         })
 
 
